@@ -518,3 +518,55 @@ $$;
 
 revoke all on function public.find_user_by_contact(text) from public;
 grant execute on function public.find_user_by_contact(text) to authenticated;
+
+-- Resolves display names for everyone on a trip (owner + companions) for the
+-- dashboard, since user_profiles itself is owner-only readable (Decision #5:
+-- no browsable directory). Preserves the same anti-enumeration boundary as
+-- trip_participants' own SELECT policy: the trip owner sees everyone; a
+-- companion sees only the owner and themselves, never other companions; a
+-- caller with no read access to the trip sees nothing.
+create or replace function public.list_trip_people(p_trip_id uuid)
+returns table (
+  user_id uuid,
+  display_name text,
+  role text,
+  visibility text
+)
+language plpgsql
+security definer
+set search_path = public
+stable
+as $$
+declare
+  v_caller uuid := auth.uid();
+  v_caller_is_owner boolean := v_caller = public.trip_owner_id(p_trip_id);
+  v_caller_is_participant boolean := public.is_trip_participant(p_trip_id, v_caller);
+begin
+  if not v_caller_is_owner and not v_caller_is_participant then
+    return;
+  end if;
+
+  return query
+  select up.user_id, up.display_name, 'owner'::text, t.visibility
+  from public.trips t
+  join public.user_profiles up on up.user_id = t.user_id
+  where t.id = p_trip_id;
+
+  if v_caller_is_owner then
+    return query
+    select up.user_id, up.display_name, 'companion'::text, tp.visibility
+    from public.trip_participants tp
+    join public.user_profiles up on up.user_id = tp.user_id
+    where tp.trip_id = p_trip_id;
+  else
+    return query
+    select up.user_id, up.display_name, 'companion'::text, tp.visibility
+    from public.trip_participants tp
+    join public.user_profiles up on up.user_id = tp.user_id
+    where tp.trip_id = p_trip_id and tp.user_id = v_caller;
+  end if;
+end;
+$$;
+
+revoke all on function public.list_trip_people(uuid) from public;
+grant execute on function public.list_trip_people(uuid) to authenticated;

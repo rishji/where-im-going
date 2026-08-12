@@ -36,6 +36,13 @@ export interface TripParticipant {
   added_at: string;
 }
 
+export interface TripPerson {
+  user_id: string;
+  display_name: string;
+  role: "owner" | "companion";
+  visibility: Visibility;
+}
+
 export interface TripNote {
   id: string;
   trip_id: string;
