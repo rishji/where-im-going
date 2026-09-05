@@ -71,3 +71,33 @@ export interface CalendarConnection {
   created_at: string;
   updated_at: string;
 }
+
+export interface PublicGalleryEntry {
+  public_slug: string;
+  display_name: string;
+  current_location: string | null;
+  next_trip_date: string | null;
+}
+
+export interface PublicTripNote {
+  id: string;
+  body: string;
+  created_at: string;
+}
+
+export interface PublicTrip {
+  trip_id: string;
+  date_from: string;
+  date_to: string;
+  location_name: string;
+  location_label: string | null;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  lat: number | null;
+  lng: number | null;
+  event_name: string | null;
+  flights: string | null;
+  confirmation_status: string;
+  notes: PublicTripNote[];
+}
