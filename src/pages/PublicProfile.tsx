@@ -21,8 +21,8 @@ export function PublicProfile() {
     void (async () => {
       try {
         setTrips(await fetchPublicTrips(slug));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong.");
+      } catch {
+        setError("Something went wrong. Try again later.");
       }
     })();
   }, [slug]);
