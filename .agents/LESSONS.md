@@ -20,6 +20,6 @@ anything that would hold in a project you've never opened belongs in
 
 ### `vite.config.ts`'s `base` must match the actual deploy target, and it changes the local dev URL too
 - **Type:** friction
-- **Trigger:** Setting up or changing where the app deploys (GitHub Pages project page vs. a custom domain), or being confused that `npm run dev` doesn't load at `localhost:5173/`.
-- **Do instead:** No custom domain exists yet, so the app deploys to a GitHub Pages *project* page (`https://rishji.github.io/where-im-going/`), which requires `base: "/where-im-going/"` in `vite.config.ts` — `base: "/"` 404s every built asset there. This also means local dev now serves under `http://localhost:5173/where-im-going/`, not the root. If a custom domain is added later (see `PLAN.md`'s open decision), revert `base` to `"/"` and add a CNAME — don't leave the GH-Pages-specific path set once that happens.
-- **Seen:** 2026-08-12 [Claude Code]
+- **Trigger:** Setting up or changing where the app deploys, or being confused about what URL `npm run dev` loads at.
+- **Do instead:** As of 2026-09-05 the app deploys to Cloudflare Pages (project `whereimgoing`, `https://whereimgoing.pages.dev`, custom domain pending) served from the domain root, so `base: "/"` is correct and `npm run dev` serves at `http://localhost:5173/`. This project has no GitHub-Pages-subpath / custom-domain conditional (unlike `where-ive-been`'s `CF_PAGES`-branched `base`) because Cloudflare Pages is now its only deploy target — GitHub Pages was disabled on the repo the same day. If a second deploy target is ever added, branch `base` the way `where-ive-been`'s `vite.config.ts` does rather than hardcoding one target's path.
+- **Seen:** 2026-08-12, superseded 2026-09-05 [Claude Code]
