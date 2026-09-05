@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PublicProfile } from "./PublicProfile";
-import { fetchPublicTrips } from "../lib/publicPages";
+import { fetchPublicGallery, fetchPublicTrips } from "../lib/publicPages";
 
 vi.mock("../lib/publicPages");
 
@@ -40,12 +40,26 @@ describe("PublicProfile", () => {
         notes: [{ id: "n1", body: "Great trip!", created_at: "2027-01-01T00:00:00Z" }]
       }
     ]);
+    vi.mocked(fetchPublicGallery).mockResolvedValue([
+      {
+        public_slug: "rishi-mohnot",
+        display_name: "Rishi Mohnot",
+        current_location: "Tokyo",
+        next_trip_date: "2027-01-01"
+      }
+    ]);
 
     renderAtSlug("rishi-mohnot");
 
     expect(await screen.findByText("Tokyo, Japan")).toBeInTheDocument();
     expect(screen.getByText("Great trip!")).toBeInTheDocument();
     expect(fetchPublicTrips).toHaveBeenCalledWith("rishi-mohnot");
+
+    expect(await screen.findByRole("heading", { name: "Rishi Mohnot" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /back to the directory/i })).toHaveAttribute(
+      "href",
+      "/going"
+    );
   });
 
   it("shows a generic not-available state for an unknown or private slug", async () => {

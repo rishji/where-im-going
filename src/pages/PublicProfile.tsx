@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchPublicTrips } from "../lib/publicPages";
+import { Link, useParams } from "react-router-dom";
+import { fetchPublicGallery, fetchPublicTrips } from "../lib/publicPages";
 import type { PublicTrip } from "../lib/types";
 
 function formatDateRange(dateFrom: string, dateTo: string): string {
@@ -11,6 +11,7 @@ export function PublicProfile() {
   const { slug } = useParams<{ slug: string }>();
   const [trips, setTrips] = useState<PublicTrip[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     if (!slug) {
@@ -18,6 +19,7 @@ export function PublicProfile() {
     }
     setTrips(null);
     setError(null);
+    setDisplayName(null);
     void (async () => {
       try {
         setTrips(await fetchPublicTrips(slug));
@@ -25,10 +27,25 @@ export function PublicProfile() {
         setError("Something went wrong. Try again later.");
       }
     })();
+    void (async () => {
+      try {
+        const gallery = await fetchPublicGallery();
+        const entry = gallery.find((row) => row.public_slug === slug);
+        if (entry) {
+          setDisplayName(entry.display_name);
+        }
+      } catch {
+        // Non-critical: the page still works without a heading if the gallery lookup fails.
+      }
+    })();
   }, [slug]);
 
   return (
     <div className="page page-public-profile">
+      <p className="public-profile-back-link">
+        <Link to="/going">← Back to the directory</Link>
+      </p>
+      {displayName && <h1>{displayName}</h1>}
       {error && <p className="auth-panel-error">{error}</p>}
       {!error && trips === null && <p className="dashboard-placeholder">Loading…</p>}
       {!error && trips !== null && trips.length === 0 && (

@@ -11,8 +11,8 @@ export function PublicDirectory() {
     void (async () => {
       try {
         setEntries(await fetchPublicGallery());
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong.");
+      } catch {
+        setError("Something went wrong. Try again later.");
       }
     })();
   }, []);

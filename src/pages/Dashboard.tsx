@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { signOut } from "../lib/auth";
 import { updateProfile } from "../lib/userProfile";
 import { createTrip, deleteTrip, fetchTrips, updateTrip, type TripInput } from "../lib/trips";
@@ -85,7 +86,11 @@ export function Dashboard({
       <header className="dashboard-header">
         <div>
           <h1>Hey, {profile.display_name}</h1>
-          {profile.public_slug && <p className="dashboard-slug">/going/{profile.public_slug}</p>}
+          {profile.public_slug && (
+            <Link className="dashboard-slug" to={`/going/${profile.public_slug}`}>
+              /going/{profile.public_slug}
+            </Link>
+          )}
         </div>
         <button type="button" onClick={() => void signOut()}>
           Sign out

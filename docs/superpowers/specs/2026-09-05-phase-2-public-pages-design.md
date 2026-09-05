@@ -97,6 +97,11 @@ private, the slug doesn't exist, or any other reason — all render the same gen
 state. This is deliberate: distinguishing "private" from "doesn't exist" would let a signed-out
 visitor enumerate which slugs correspond to real accounts.
 
+`PublicProfile`'s generic "This page isn't available" (zero-rows) state and its separate "Something
+went wrong" (fetch-rejected) state are deliberately different, and this is not an enumeration risk:
+`list_public_trips` returns zero rows rather than erroring for any slug, valid or not, so the error
+branch never carries per-slug signal — only genuine RPC/network failures reach it.
+
 ## 4. SEO basics
 
 - Static, generic Open Graph tags + meta description added to `index.html` (site-wide, not

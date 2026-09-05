@@ -45,4 +45,17 @@ describe("PublicDirectory", () => {
 
     expect(await screen.findByText("No one has published a public page yet.")).toBeInTheDocument();
   });
+
+  it("shows a generic error message if fetching the gallery fails", async () => {
+    vi.mocked(fetchPublicGallery).mockRejectedValue(new Error("Database connection failed"));
+
+    render(
+      <MemoryRouter>
+        <PublicDirectory />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Something went wrong. Try again later.")).toBeInTheDocument();
+    expect(screen.queryByText("Database connection failed")).not.toBeInTheDocument();
+  });
 });
