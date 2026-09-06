@@ -170,21 +170,23 @@ button:focus-visible {
 .slug-input {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-1);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0 0.5rem;
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+  background: var(--surface);
 }
 
 .slug-input span {
   color: var(--muted);
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
 .slug-input input {
   border: none;
-  padding: 0.6rem 0.25rem;
+  background: transparent;
+  padding: var(--space-2) var(--space-1);
 }
 
 button {
@@ -253,10 +255,6 @@ button:disabled {
   margin-bottom: var(--space-3);
 }
 
-.trip-card-editing {
-  padding: var(--space-4);
-}
-
 .trip-list {
   list-style: none;
   margin: 0;
@@ -266,10 +264,42 @@ button:disabled {
   gap: 0.75rem;
 }
 
-.trip-card {
+.auth-panel,
+.profile-onboarding,
+.trip-card,
+.trip-form,
+.companion-picker,
+.companion-visibility-toggle,
+.notes-panel,
+.public-gallery-entry {
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.auth-panel,
+.profile-onboarding,
+.trip-form,
+.companion-picker,
+.companion-visibility-toggle,
+.notes-panel,
+.public-gallery-entry {
+  padding: var(--space-4);
+}
+
+.trip-card {
+  padding: 0;
   overflow: hidden;
+}
+
+.trip-form {
+  margin-bottom: var(--space-4);
+}
+
+/* Must follow `.trip-card { padding: 0 }` — same specificity, later rule wins. */
+.trip-card-editing {
+  padding: var(--space-4);
 }
 
 .trip-card-summary {
@@ -300,17 +330,47 @@ button:disabled {
   white-space: nowrap;
 }
 
-.trip-status {
-  text-transform: capitalize;
+.trip-status,
+.trip-role,
+.public-gallery-next-trip {
+  display: inline-block;
+  border-radius: var(--radius-lg);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
   border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.1rem 0.55rem;
+  color: var(--muted);
 }
 
-.trip-role {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.1rem 0.55rem;
+.trip-status {
+  text-transform: capitalize;
+}
+
+/*
+ * Badge text is mixed 55% toward --fg so it clears WCAG AA (>=4.5:1) against its
+ * own 15%-tinted background. Raising the background mix percentage does NOT help
+ * — it moves the background toward the text color and lowers contrast. The pure
+ * accent border and the tint still carry the per-status identity.
+ */
+.trip-status-booked {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  color: color-mix(in srgb, var(--accent) 55%, var(--fg));
+  border-color: var(--accent);
+}
+
+.trip-status-confirmed {
+  background: color-mix(in srgb, var(--accent-warm) 15%, var(--surface));
+  color: color-mix(in srgb, var(--accent-warm) 55%, var(--fg));
+  border-color: var(--accent-warm);
+}
+
+.trip-status-tentative {
+  background: color-mix(in srgb, var(--accent-gold) 15%, var(--surface));
+  color: color-mix(in srgb, var(--accent-gold) 55%, var(--fg));
+  border-color: var(--accent-gold);
+}
+
+.trip-status-planned {
+  background: var(--bg-subtle);
 }
 
 .trip-card-actions {
@@ -356,8 +416,9 @@ button:disabled {
 
 .trip-note {
   border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
 }
 
 .trip-note p {
@@ -378,17 +439,17 @@ button:disabled {
 
 .trip-note-editing textarea {
   width: 100%;
-  padding: 0.5rem;
+  padding: var(--space-2);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font: inherit;
 }
 
 .note-form textarea {
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   font: inherit;
   resize: vertical;
 }
@@ -397,13 +458,6 @@ button:disabled {
   color: var(--muted);
   font-size: 0.8rem;
   margin: 0.4rem 0;
-}
-
-.trip-form {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
 }
 
 .trip-form-row {
@@ -434,20 +488,13 @@ button:disabled {
   padding: 0;
   display: flex;
   flex-direction: column;
-}
-
-.public-gallery-entry {
-  padding: 1rem 0;
-  border-top: 1px solid var(--border);
-}
-
-.public-gallery-entry:first-child {
-  border-top: none;
+  gap: var(--space-3);
 }
 
 .public-gallery-entry a {
   color: var(--accent);
   font-weight: 600;
+  font-size: var(--text-lg);
   text-decoration: none;
 }
 
@@ -456,11 +503,12 @@ button:disabled {
 }
 
 .public-gallery-entry p {
-  margin: 0.25rem 0 0;
+  margin: var(--space-1) 0 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 
-.public-gallery-next-trip {
-  font-size: 0.85rem;
+/* `.public-gallery-entry p` (0,1,1) outranks the shared pill rule (0,1,0). */
+.public-gallery-entry p.public-gallery-next-trip {
+  font-size: var(--text-xs);
 }
