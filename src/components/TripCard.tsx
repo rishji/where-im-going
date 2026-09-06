@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { listTripPeople } from "../lib/participants";
 import { fetchNotes } from "../lib/notes";
+import type { TripInput } from "../lib/trips";
 import type { Trip, TripNote, TripPerson } from "../lib/types";
 import { CompanionPicker } from "./CompanionPicker";
 import { CompanionVisibilityToggle } from "./CompanionVisibilityToggle";
 import { NotesPanel } from "./NotesPanel";
+import { TripForm } from "./TripForm";
 
 function formatDateRange(dateFrom: string, dateTo: string): string {
   return dateFrom === dateTo ? dateFrom : `${dateFrom} – ${dateTo}`;
@@ -13,13 +15,19 @@ function formatDateRange(dateFrom: string, dateTo: string): string {
 export function TripCard({
   trip,
   currentUserId,
+  isEditing,
   onEdit,
-  onDelete
+  onDelete,
+  onFormSubmit,
+  onFormCancel
 }: {
   trip: Trip;
   currentUserId: string;
+  isEditing: boolean;
   onEdit: (trip: Trip) => void;
   onDelete: (tripId: string) => Promise<void>;
+  onFormSubmit: (input: TripInput) => Promise<void>;
+  onFormCancel: () => void;
 }) {
   const isOwner = trip.user_id === currentUserId;
   const [expanded, setExpanded] = useState(false);
@@ -29,6 +37,14 @@ export function TripCard({
   const [deleting, setDeleting] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (isEditing) {
+    return (
+      <li className="trip-card trip-card-editing">
+        <TripForm trip={trip} onSubmit={onFormSubmit} onCancel={onFormCancel} />
+      </li>
+    );
+  }
 
   async function loadDetails() {
     setLoading(true);

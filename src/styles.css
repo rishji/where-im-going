@@ -155,6 +155,19 @@ button:disabled {
   cursor: pointer;
 }
 
+.dashboard-past-trips {
+  margin-top: 0.75rem;
+}
+
+.dashboard-past-toggle {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.trip-card-editing {
+  padding: 1rem;
+}
+
 .trip-list {
   list-style: none;
   margin: 0;

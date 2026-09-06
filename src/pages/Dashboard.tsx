@@ -19,6 +19,8 @@ export function Dashboard({
   const [tripsError, setTripsError] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<"none" | "create" | "edit">("none");
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
+  const [showPastOwned, setShowPastOwned] = useState(false);
+  const [showPastCompanion, setShowPastCompanion] = useState(false);
 
   useEffect(() => {
     void loadTrips();
@@ -81,6 +83,29 @@ export function Dashboard({
   const ownedTrips = trips.filter((trip) => trip.user_id === profile.user_id);
   const companionTrips = trips.filter((trip) => trip.user_id !== profile.user_id);
 
+  const today = new Date().toISOString().slice(0, 10);
+  const isPast = (trip: Trip) => trip.date_to < today;
+
+  const ownedUpcoming = ownedTrips.filter((trip) => !isPast(trip));
+  const ownedPast = ownedTrips.filter(isPast).slice().reverse();
+  const companionUpcoming = companionTrips.filter((trip) => !isPast(trip));
+  const companionPast = companionTrips.filter(isPast).slice().reverse();
+
+  function renderTripCard(trip: Trip) {
+    return (
+      <TripCard
+        key={trip.id}
+        trip={trip}
+        currentUserId={profile.user_id}
+        isEditing={formMode === "edit" && editingTrip?.id === trip.id}
+        onEdit={startEdit}
+        onDelete={handleDelete}
+        onFormSubmit={handleFormSubmit}
+        onFormCancel={cancelForm}
+      />
+    );
+  }
+
   return (
     <div className="page page-dashboard">
       <header className="dashboard-header">
@@ -118,8 +143,8 @@ export function Dashboard({
           )}
         </div>
 
-        {formMode !== "none" && (
-          <TripForm trip={editingTrip} onSubmit={handleFormSubmit} onCancel={cancelForm} />
+        {formMode === "create" && (
+          <TripForm trip={null} onSubmit={handleFormSubmit} onCancel={cancelForm} />
         )}
 
         {tripsLoading && <p className="dashboard-placeholder">Loading…</p>}
@@ -129,22 +154,33 @@ export function Dashboard({
           <p className="dashboard-placeholder">No trips yet.</p>
         )}
 
-        {ownedTrips.length > 0 && (
-          <ul className="trip-list">
-            {ownedTrips.map((trip) => (
-              <TripCard key={trip.id} trip={trip} currentUserId={profile.user_id} onEdit={startEdit} onDelete={handleDelete} />
-            ))}
-          </ul>
+        {ownedUpcoming.length > 0 && <ul className="trip-list">{ownedUpcoming.map(renderTripCard)}</ul>}
+
+        {ownedPast.length > 0 && (
+          <div className="dashboard-past-trips">
+            <button type="button" className="link-button dashboard-past-toggle" onClick={() => setShowPastOwned((v) => !v)}>
+              {showPastOwned ? "Hide" : "Show"} past trips ({ownedPast.length})
+            </button>
+            {showPastOwned && <ul className="trip-list">{ownedPast.map(renderTripCard)}</ul>}
+          </div>
         )}
 
         {companionTrips.length > 0 && (
           <>
             <h3 className="dashboard-subsection">Trips you're joining</h3>
-            <ul className="trip-list">
-              {companionTrips.map((trip) => (
-                <TripCard key={trip.id} trip={trip} currentUserId={profile.user_id} onEdit={startEdit} onDelete={handleDelete} />
-              ))}
-            </ul>
+            {companionUpcoming.length > 0 && <ul className="trip-list">{companionUpcoming.map(renderTripCard)}</ul>}
+            {companionPast.length > 0 && (
+              <div className="dashboard-past-trips">
+                <button
+                  type="button"
+                  className="link-button dashboard-past-toggle"
+                  onClick={() => setShowPastCompanion((v) => !v)}
+                >
+                  {showPastCompanion ? "Hide" : "Show"} past trips ({companionPast.length})
+                </button>
+                {showPastCompanion && <ul className="trip-list">{companionPast.map(renderTripCard)}</ul>}
+              </div>
+            )}
           </>
         )}
       </section>
