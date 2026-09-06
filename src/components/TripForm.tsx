@@ -12,7 +12,7 @@ function toInput(trip: Trip | null): TripInput {
     event_name: trip?.event_name ?? "",
     flights: trip?.flights ?? "",
     confirmation_status: trip?.confirmation_status ?? "tentative",
-    visibility: trip?.visibility ?? "private"
+    visibility: trip?.visibility ?? "public"
   };
 }
 
