@@ -295,7 +295,7 @@ button:disabled {
 @media (min-width: 960px) {
   .trip-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
     gap: var(--space-4);
   }
 
@@ -346,6 +346,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   width: 100%;
   background: none;
