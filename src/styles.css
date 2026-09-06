@@ -1,10 +1,61 @@
 :root {
-  --bg: #fafaf8;
-  --fg: #1a1a1a;
-  --muted: #6b6b6b;
-  --accent: #2b6cb0;
-  --border: #e2e2df;
+  /* Color — warm parchment palette (light) */
+  --bg: #f7f0de;
+  --bg-subtle: #ede2c4;
+  --surface: #fffaec;
+  --fg: #1c1a14;
+  --muted: #857a5c;
+  --border: #d6c79e;
+  --accent: #1f4d3a;
+  --accent-warm: #c8431b;
+  --accent-gold: #d68a14;
+  --error: #b91c1c;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.85rem;
+  --text-base: 1rem;
+  --text-lg: 1.15rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-display: 2.75rem;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 4rem;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  /* Shadow */
+  --shadow: 0 1px 0 rgba(28, 26, 20, 0.04), 0 18px 40px -22px rgba(28, 26, 20, 0.22);
+  --shadow-lg: 0 2px 0 rgba(28, 26, 20, 0.04), 0 28px 60px -28px rgba(28, 26, 20, 0.28);
+
   font-family: "Inter", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #221f18;
+    --bg-subtle: #2b271d;
+    --surface: #2f2b21;
+    --fg: #f3ead2;
+    --muted: #b3a687;
+    --border: #4a4331;
+    --accent: #5fae8c;
+    --accent-warm: #e0774a;
+    --accent-gold: #e8ab3f;
+    --error: #f27272;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 18px 40px -22px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 2px 0 rgba(0, 0, 0, 0.2), 0 28px 60px -28px rgba(0, 0, 0, 0.7);
+  }
 }
 
 * {
