@@ -342,6 +342,17 @@ button:disabled {
   padding: var(--space-4);
 }
 
+/*
+ * `.trip-card { padding: 0 }` assumes the card's padding comes from the
+ * `.trip-card-summary` button inside it. PublicProfile renders bare trip cards
+ * with no summary button, so they need their own padding or the text sits flush
+ * against the border and the corner radius clips it. Higher specificity than
+ * `.trip-card`, and `.trip-card-editing` never renders on this page.
+ */
+.page-public-profile .trip-card {
+  padding: var(--space-3) var(--space-4);
+}
+
 .trip-card-summary {
   display: flex;
   align-items: center;
@@ -362,9 +373,16 @@ button:disabled {
   font-weight: normal;
 }
 
+/*
+ * `flex-wrap: wrap` lets the date/status/role chips break onto a second line on
+ * narrow viewports. Without it the row is rigid and `.trip-card`'s
+ * `overflow: hidden` silently shaves the trailing role pill below ~385px.
+ * `white-space: nowrap` stays: a date range must still never break mid-string.
+ */
 .trip-card-meta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.6rem;
   font-size: 0.85rem;
   color: var(--muted);
@@ -451,8 +469,15 @@ button:disabled {
   gap: 0.5rem;
 }
 
+/*
+ * `min-width: 0` overrides the flex default of `min-width: auto`, which pins
+ * the input to the intrinsic width of its 20-character default size and pushes
+ * the Add button past the card edge (where `overflow: hidden` clips it) at
+ * narrow widths.
+ */
 .companion-add-form input {
   flex: 1;
+  min-width: 0;
 }
 
 .trip-note {
@@ -501,8 +526,14 @@ button:disabled {
   margin: 0.4rem 0;
 }
 
+/*
+ * The two date fields can't shrink below the native date input's intrinsic
+ * width, so without wrapping they push the form — and the whole page — into
+ * horizontal scroll at ~375px. Wrapping stacks them instead.
+ */
 .trip-form-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
@@ -548,4 +579,24 @@ button:disabled {
 /* `.public-gallery-entry p` (0,1,1) outranks the shared pill rule (0,1,0). */
 .public-gallery-entry p.public-gallery-next-trip {
   font-size: var(--text-xs);
+}
+
+/*
+ * The only link in the app outside `.public-gallery-entry` and `.dashboard-slug`;
+ * without this it falls back to the UA's default link blue, which is off-palette
+ * in both schemes. Matches the gallery link treatment.
+ */
+.public-profile-back-link {
+  margin: 0 0 var(--space-4);
+}
+
+.public-profile-back-link a {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+
+.public-profile-back-link a:hover {
+  text-decoration: underline;
 }
